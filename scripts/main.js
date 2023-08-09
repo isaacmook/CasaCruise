@@ -18,16 +18,6 @@ $(document).ready(function () {
   // Clear the wishlist table on document load
   $('.container tbody').empty();
 
-  // When the card is clicked
-  $(".card").click(function () {
-    // Toggle the price & description text
-    $("#priceText").toggle();
-    $("#descriptionText").toggle();
-
-    // Resize the image to fit the additional content
-    $(".card-img-top").toggleClass("small");
-  });
-
   // Sample data for trips
   const trips = [
     {
@@ -44,53 +34,62 @@ $(document).ready(function () {
     }
   ];
 
+  // Array to store booked trips
+  const bookedTrips = [];
+
   // Function to generate cruise package cards
-function generateCruisePackages() {
-  const container = $('.container .row');
+  function generateCruisePackages() {
+    const container = $('.container .row');
 
-  cruisePackages.forEach((package, index) => {
-    const card = $('<div>').addClass('col-md-4 mb-4').html(`
-      <div class="card">
-        <img src="${package.image}" class="card-img-top" alt="${package.destination} Cruise">
-        <div class="card-body">
-          <h5 class="card-title">${package.destination} Cruise</h5>
-          <button class="btn btn-primary book-button" data-destination="${index}">Book</button>
+    trips.forEach((trip, index) => {
+      const card = $('<div>').addClass('col-md-4 mb-4').html(`
+        <div class="card">
+          <img src="${trip.image}" class="card-img-top" alt="${trip.destination} Cruise">
+          <div class="card-body">
+            <h5 class="card-title">${trip.destination} Cruise</h5>
+            <button class="btn btn-primary book-button" data-destination="${index}">Book</button>
+          </div>
         </div>
-      </div>
-    `);
+      `);
 
-    container.append(card);
+      container.append(card);
+    });
+  }
+
+  // Function to generate trip cards in the wishlist
+  function generateTrips() {
+    const container = $('.container tbody');
+
+    container.empty(); // Clear existing rows
+
+    bookedTrips.forEach((trip, index) => {
+      const row = $('<tr>').html(`
+        <td><img src="${trip.image}" alt="${trip.destination}" width="100"></td>
+        <td>${trip.destination}</td>
+        <td><button class="btn btn-danger btn--remove" data-index="${index}">Remove</button></td>
+      `);
+
+      container.append(row);
+    });
+  }
+
+  // Call the functions to generate content
+  
+  generateTrips();
+
+  // Add event listener to book buttons
+  $(document).on('click', '.book-button', function () {
+    const destinationIndex = $(this).data('destination');
+    const selectedTrip = trips[destinationIndex];
+    bookedTrips.push(selectedTrip);
+    generateTrips(); // Update the table with the new trip
   });
-}
 
-// Function to generate trip cards in the wishlist
-function generateTrips() {
-  const container = $('.container tbody');
-
-  trips.forEach(trip => {
-    const row = $('<tr>').html(`
-      <td><img src="${trip.image}" alt="${trip.destination}" width="100"></td>
-      <td>${trip.destination}</td>
-      <td><button class="btn btn-danger btn--">Remove</button></td>
-    `);
-
-    container.append(row);
+  // Remove trips
+  $(document).on('click', '.btn--remove', function () {
+    const removeIndex = $(this).data('index');
+    bookedTrips.splice(removeIndex, 1);
+    generateTrips(); // Update the table after removal
   });
-}
 
-// Call the functions to generate content
-generateCruisePackages();
-generateTrips();
-
-// Add event listener to book buttons
-$(document).on('click', '.book-button', function () {
-  const destination = $(this).data('destination');
-  addToWishlist(destination);
 });
-
-// Removing rows
-$(document).on('click', '.btn-danger', function () {
-  // Find parent row and remove it from table
-  $(this).closest('tr').remove();
-});
-})
