@@ -1,7 +1,7 @@
 // When the document loads
 $(document).ready(function () {
 
-  console.log("Hello");
+  console.log("Welcome");
 
   // -----------------------------------------
   // Home Page
@@ -15,53 +15,46 @@ $(document).ready(function () {
   // Hide all description text from the plant cards
   $("#descriptionText").hide();
 
-});
+  // Clear the wishlist table on document load
+  $('.container tbody').empty();
 
-// When the card is clicked
-$(".card").click(function () {
+  // When the card is clicked
+  $(".card").click(function () {
+    // Toggle the price & description text
+    $("#priceText").toggle();
+    $("#descriptionText").toggle();
 
-  // Toggle the price & description text
-  $("#priceText").toggle();
-  $("#descriptionText").toggle();
+    // Resize the image to fit the additional content
+    $(".card-img-top").toggleClass("small");
+  });
 
-  // Resize the image to fit the additional content
-  $(".card-img-top").toggleClass("small");
+  // Sample data for trips
+  const trips = [
+    {
+      image: '/assets/colin-lloyd-JW5j3o_HYgM-unsplash.jpg',
+      destination: 'Caribbean'
+    },
+    {
+      image: '/assets/nick-karvounis-GT4TGeuZZp0-unsplash.jpg',
+      destination: 'Mediterranean'
+    },
+    {
+      image: '/assets/heather-shevlin-jomtL-cBB-E-unsplash.jpg',
+      destination: 'Alaska',
+    }
+  ];
 
-});
-
-//Adding content
-
-// Sample data for cruise packages
-const cruisePackages = [
-  {
-    title: 'Caribbean Cruise',
-    description: 'Explore the stunning beaches and vibrant culture of the Caribbean islands.',
-    image: '/assets/colin-lloyd-JW5j3o_HYgM-unsplash.jpg'
-  },
-  {
-    title: 'Mediterranean Cruise',
-    description: 'Experience the charm of the Mediterranean with its historic cities and stunning landscapes.',
-    image: '/assets/nick-karvounis-GT4TGeuZZp0-unsplash.jpg'
-  },
-  {
-    title: 'Alaska Cruise',
-    description: 'Witness the beauty of Alaska\'s glaciers and wildlife on an unforgettable cruise.',
-    image: '/assets/heather-shevlin-jomtL-cBB-E-unsplash.jpg'
-  }
-];
-
- // Function to generate cruise package cards
- function generateCruisePackages() {
+  // Function to generate cruise package cards
+function generateCruisePackages() {
   const container = $('.container .row');
 
   cruisePackages.forEach((package, index) => {
     const card = $('<div>').addClass('col-md-4 mb-4').html(`
       <div class="card">
-        <img src="${package.image}" class="card-img-top" alt="${package.title}">
+        <img src="${package.image}" class="card-img-top" alt="${package.destination} Cruise">
         <div class="card-body">
-          <h5 class="card-title">${package.title}</h5>
-          <p class="card-text">${package.description}</p>
-          <button class="btn btn-primary book-button" data-index="${index}">Book</button>
+          <h5 class="card-title">${package.destination} Cruise</h5>
+          <button class="btn btn-primary book-button" data-destination="${index}">Book</button>
         </div>
       </div>
     `);
@@ -70,70 +63,34 @@ const cruisePackages = [
   });
 }
 
-// Sample data for trips
-const trips = [
-  {
-    image: '/assets/colin-lloyd-JW5j3o_HYgM-unsplash.jpg',
-    destination: 'Caribbean'
-  },
-  {
-    image: '/assets/nick-karvounis-GT4TGeuZZp0-unsplash.jpg',
-    destination: 'Mediterranean'
-    
-  },
-  {
-    image: '/assets/heather-shevlin-jomtL-cBB-E-unsplash.jpg',
-    destination: 'Alaska',
-  }
-];
-
 // Function to generate trip cards in the wishlist
 function generateTrips() {
-  const container = document.querySelector('.container tbody');
+  const container = $('.container tbody');
 
   trips.forEach(trip => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
+    const row = $('<tr>').html(`
       <td><img src="${trip.image}" alt="${trip.destination}" width="100"></td>
       <td>${trip.destination}</td>
       <td><button class="btn btn-danger btn--">Remove</button></td>
-    `;
+    `);
 
-    container.appendChild(row);
+    container.append(row);
   });
 }
 
-// Function to handle adding a trip to the wishlist
-function addToWishlist(index) {
-  const container = document.querySelector('.container tbody');
-  const trip = trips[index];
+// Call the functions to generate content
+generateCruisePackages();
+generateTrips();
 
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td><img src="${trip.image}" alt="${trip.destination}" width="100"></td>
-    <td>${trip.destination}</td>
-    <td><button class="btn btn-danger btn--">Remove</button></td>
-  `;
-
-  container.appendChild(row);
-}
-
-  // Call the functions to generate content
-  //generateCruisePackages();
-  generateTrips();
-
-  // Add event listener to book buttons
-  $(document).on('click', '.book-button', function () {
-    const index = $(this).data('index');
-    addToWishlist(index);
-  });
-
-
-// Removing rows
-$(document).ready(function () {
-  $(".btn-danger").click(function () {
-    // Find parent row and remove it from table
-    $(this).closest("tr").remove();
-  });
+// Add event listener to book buttons
+$(document).on('click', '.book-button', function () {
+  const destination = $(this).data('destination');
+  addToWishlist(destination);
 });
 
+// Removing rows
+$(document).on('click', '.btn-danger', function () {
+  // Find parent row and remove it from table
+  $(this).closest('tr').remove();
+});
+})
