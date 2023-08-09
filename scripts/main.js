@@ -50,8 +50,8 @@ const cruisePackages = [
   }
 ];
 
-// Function to generate cruise package cards
-function generateCruisePackages() {
+ // Function to generate cruise package cards
+ function generateCruisePackages() {
   const container = $('.container .row');
 
   cruisePackages.forEach((package, index) => {
@@ -118,20 +118,15 @@ function addToWishlist(index) {
   container.appendChild(row);
 }
 
-// Call the functions to generate content
-document.addEventListener('DOMContentLoaded', () => {
-  generateCruisePackages();
+  // Call the functions to generate content
+  //generateCruisePackages();
   generateTrips();
 
   // Add event listener to book buttons
-  const bookButtons = document.querySelectorAll('.book-button');
-  bookButtons.forEach(button => {
-    button.addEventListener('click', function () {
-      const index = this.getAttribute('data-index');
-      addToWishlist(index);
-    });
+  $(document).on('click', '.book-button', function () {
+    const index = $(this).data('index');
+    addToWishlist(index);
   });
-});
 
 
 // Removing rows
