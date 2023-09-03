@@ -73,13 +73,12 @@ $(document).ready(function () {
     });
   }
 
-  // Call the functions to generate content
   
   generateTrips();
 
   // Add event listener to book buttons
   $(document).on('click', '.book-button', function () {
-    const destinationIndex = $(this).data('destination');
+    const destinationIndex = $(bookedTrips).data('destination');
     const selectedTrip = trips[destinationIndex];
     bookedTrips.push(selectedTrip);
     generateTrips(); // Update the table with the new trip
