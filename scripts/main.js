@@ -21,14 +21,32 @@ $(document).ready(function () {
   // Sample data for trips
   const trips = [
     {
+      title: 'Caribbean Cruise',
+      description: 'Explore the stunning beaches and vibrant culture of the Caribbean islands.',
+      duration: 7,
+      destinations: 1,
+      roundTrip: true,
+      price: 1000,
       image: '/assets/colin-lloyd-JW5j3o_HYgM-unsplash.jpg',
       destination: 'Caribbean'
     },
     {
+      title: 'Mediterranean Cruise',
+      description: 'Experience the charm of the Mediterranean with its historic cities and stunning landscapes.',
+      duration: 11,
+      destinations: 1,
+      roundTrip: true,
+      price: 3500,
       image: '/assets/nick-karvounis-GT4TGeuZZp0-unsplash.jpg',
       destination: 'Mediterranean'
     },
-    {
+    { 
+      title: 'Alaska Cruise',
+      description: "Witness the beauty of Alaska's glaciers and wildlife on an unforgettable cruise.",
+      duration: 17,
+      destinations: 1,
+      roundTrip: true,
+      price: 5000,
       image: '/assets/heather-shevlin-jomtL-cBB-E-unsplash.jpg',
       destination: 'Alaska',
     }
@@ -38,10 +56,10 @@ $(document).ready(function () {
   const bookedTrips = [];
 
   // Function to generate cruise package cards
-  function generateCruisePackages() {
-    const container = $('.container .row');
+  function generateTripCards(tripData) {
+    const container = $('.container.row');
 
-    trips.forEach((trip, index) => {
+    tripData.forEach((trip, index) => {
       const card = $('<div>').addClass('col-md-4 mb-4').html(`
         <div class="card">
           <img src="${trip.image}" class="card-img-top" alt="${trip.destination} Cruise">
@@ -52,38 +70,22 @@ $(document).ready(function () {
         </div>
       `);
 
-      container.append(card);
+      container.appendChild(card);
     });
-  }
-
-  // Function to generate trip cards in the wishlist
-  function generateTrips() {
-    const container = $('.container tbody');
-
-    container.empty(); // Clear existing rows
-
-    bookedTrips.forEach((trip, index) => {
-      const row = $('<tr>').html(`
-        <td><img src="${trip.image}" alt="${trip.destination}" width="100"></td>
-        <td>${trip.destination}</td>
-        <td><button class="btn btn-danger btn--remove" data-index="${index}">Remove</button></td>
-      `);
-
-      container.append(row);
-    });
-  }
-
-  
-  generateTrips();
+  }  
 
   // Add event listener to book buttons
-  $(document).on('click', '.book-button', function () {
-    const destinationIndex = $(bookedTrips).data('destination');
-    const selectedTrip = trips[destinationIndex];
-    bookedTrips.push(selectedTrip);
-    generateTrips(); // Update the table with the new trip
+  document.addEventListener('click', function (event) {
+
+    const clickedElement = event.target;
+      if (event.target.classList.contains('book-button')) {
+        const index = event.target.dataset.index;
+        alert(`Booked trip: ${trips[index].title}`);
+      }
   });
 
+  generateTripCards(trips);
+  
   // Remove trips
   $(document).on('click', '.btn--remove', function () {
     const removeIndex = $(this).data('index');
@@ -92,36 +94,6 @@ $(document).ready(function () {
   });
 
 });
-
-// Sample data for trips
-const trips = [
-  {
-    title: 'Caribbean Cruise',
-    description: 'Explore the stunning beaches and vibrant culture of the Caribbean islands.',
-    duration: 7,
-    destinations: 1,
-    roundTrip: true,
-    price: 1000,
-  },
-  
-  {
-      title: 'Mediterranean Cruise',
-      description: 'Experience the charm of the Mediterranean with its historic cities and stunning landscapes.',
-      duration: 11,
-      destinations: 1,
-      roundTrip: true,
-      price: 3500,
-    },
-
-    {
-      title: 'Alaska Cruise',
-      description: "Witness the beauty of Alaska's glaciers and wildlife on an unforgettable cruise.",
-      duration: 17,
-      destinations: 1,
-      roundTrip: true,
-      price: 5000,
-    },
-];
 
 // Function to generate trip cards
 function generateTripCards() {
